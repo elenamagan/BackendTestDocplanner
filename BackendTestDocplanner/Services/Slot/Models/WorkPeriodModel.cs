@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines working hours as provided in the slot service
     /// </summary>
-    internal class WorkPeriodModel
+    public class WorkPeriodModel
     {
         /// <summary>
         /// Morning opening hour (int, from 0 to 23)

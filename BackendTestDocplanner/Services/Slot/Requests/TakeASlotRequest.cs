@@ -5,7 +5,7 @@ namespace BackendTestDocplanner.Services.Models.Requests
     /// <summary>
     /// Defines the request "Take a slot" of the slot service
     /// </summary>
-    internal class TakeASlotRequest
+    public class TakeASlotRequest
     {
         /// <summary>
         /// Initial time of the slot. For simplicity, it doesn't consider timezones.

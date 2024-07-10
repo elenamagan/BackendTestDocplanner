@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines a daily slot availability as provided in the slot service
     /// </summary>
-    internal class DailyAvailabilityModel
+    public class DailyAvailabilityModel
     {
         /// <summary>
         /// Work period

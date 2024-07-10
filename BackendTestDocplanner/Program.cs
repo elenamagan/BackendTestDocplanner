@@ -1,6 +1,8 @@
+using BackendTestDocplanner.Services.Slot;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http.Headers;
 
 namespace BackendTestDocplanner
 {
@@ -23,12 +25,23 @@ namespace BackendTestDocplanner
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
 
-            var apiBuilder = WebApplication.CreateBuilder();
-            apiBuilder.Services.AddControllers();
-            apiBuilder.Services.AddEndpointsApiExplorer();
-            apiBuilder.Services.AddSwaggerGen();
+            var builder = WebApplication.CreateBuilder();
 
-            var apiHost = apiBuilder.Build();
+            builder.Services.AddHttpClient<SlotService>(client =>
+            {
+                string username = Configuration["SlotService:Username"];
+                string password = Configuration["SlotService:Password"];
+
+                client.BaseAddress = new Uri("https://draliatest.azurewebsites.net/");
+                var authHeaderValue = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes($"{username}:{password}"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authHeaderValue);
+            });
+
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            var apiHost = builder.Build();
             apiHost.UseSwagger();
             apiHost.UseSwaggerUI();
             apiHost.UseHttpsRedirection();

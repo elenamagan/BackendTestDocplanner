@@ -10,7 +10,7 @@ namespace BackendTestDocplanner.Services.Models.Responses
     /// <summary>
     /// Defines the response "Get Availability" of the slot service
     /// </summary>
-    internal class GetAvailabilityResponse
+    public class GetAvailabilityResponse
     {
         /// <summary>
         /// Facility information

@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines a facility as provided in the slot service
     /// </summary>
-    internal class FacilityModel
+    public class FacilityModel
     {
         /// <summary>
         /// Facility name

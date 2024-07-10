@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines a patient as provided in the slot service
     /// </summary>
-    internal class PatientModel
+    public class PatientModel
     {
         /// <summary>
         /// Patient name
