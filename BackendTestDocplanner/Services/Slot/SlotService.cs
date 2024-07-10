@@ -17,7 +17,7 @@ namespace BackendTestDocplanner.Services.Slot
         /// <summary>
         /// Gets weekly availability from the slot service API
         /// </summary>
-        /// <param name="date">The date in yyyyMMdd format</param>
+        /// <param name="date">The date in yyyyMMdd format. Must be start of the week (monday)</param>
         /// <returns>The availability response</returns>
         public async Task<GetAvailabilityResponse> GetWeeklyAvailabilityAsync(string date)
         {

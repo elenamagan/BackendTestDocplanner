@@ -106,12 +106,22 @@ namespace BackendTestDocplanner.Controllers
         /// <summary>
         /// Gets the start date (monday) of a week, given a certain date
         /// </summary>
-        private static DateTime GetWeekStartDate(DateTime date)
+        public static DateTime GetWeekStartDate(DateTime date)
         {
             // Assuming the week starts on Monday
             int diff = (7 + (date.DayOfWeek - DayOfWeek.Monday)) % 7;
             DateTime weekStart = date.AddDays(-diff);
             return weekStart;
+        }
+
+        /// <summary>
+        /// Gets the start date (monday) of a week, given a certain date
+        /// </summary>
+        public static DateTime GetWeekEndDate(DateTime date)
+        {
+            DateTime startOfWeek = GetWeekStartDate(date);
+            DateTime endOfWeek = startOfWeek.AddDays(6);
+            return endOfWeek;
         }
 
         /// <summary>
