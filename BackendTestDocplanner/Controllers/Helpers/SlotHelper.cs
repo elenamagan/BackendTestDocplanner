@@ -1,4 +1,4 @@
-﻿using BackendTestDocplanner.Services.Slot.Models;
+﻿using BackendTestDocplanner.Services.Slot.Schemas;
 
 namespace BackendTestDocplanner.Controllers.Helpers
 {

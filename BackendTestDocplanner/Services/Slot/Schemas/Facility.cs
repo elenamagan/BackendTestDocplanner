@@ -1,4 +1,4 @@
-﻿namespace BackendTestDocplanner.Services.Slot.Models
+﻿namespace BackendTestDocplanner.Services.Slot.Schemas
 {
     /// <summary>
     /// Defines a facility as provided in the slot service

@@ -1,21 +1,13 @@
 using BackendTestDocplanner.Controllers.Helpers;
-using BackendTestDocplanner.Controllers.Models;
-using BackendTestDocplanner.Services.Slot;
-using BackendTestDocplanner.Services.Slot.Models;
-using Moq;
+using BackendTestDocplanner.Services.Slot.Schemas;
 
 namespace BackendTestDocplanner.Tests
 {
     public class Tests
     {
-        private Mock<HttpClient> _mockHttpClient;
-        private SlotService _slotService;
-
         [SetUp]
         public void Setup()
         {
-            _mockHttpClient = new Mock<HttpClient>();
-            _slotService = new SlotService(_mockHttpClient.Object);
         }
 
         [Test]
@@ -76,15 +68,15 @@ namespace BackendTestDocplanner.Tests
 
             var availableSlots = SlotHelper.GetAvailableSlots(
                 SlotHelper.GenerateSlots(baseDate, workPeriod, slotDurationMinutes),
-                availabilityResponse.Monday.BusySlots
+                availabilityResponse.Monday!.BusySlots
             );
 
             // Assert
-            Assert.AreEqual(expectedAvailableSlots.Count, availableSlots.Count, "The number of available slots does not match the expected count.");
+            Assert.That(availableSlots, Has.Count.EqualTo(expectedAvailableSlots.Count), "The number of available slots does not match the expected count.");
             for (int i = 0; i < expectedAvailableSlots.Count; i++)
             {
-                Assert.AreEqual(expectedAvailableSlots[i].Start, availableSlots[i].Start, $"Start time of slot {i} does not match.");
-                Assert.AreEqual(expectedAvailableSlots[i].End, availableSlots[i].End, $"End time of slot {i} does not match.");
+                Assert.That(availableSlots[i].Start, Is.EqualTo(expectedAvailableSlots[i].Start), $"Start time of slot {i} does not match.");
+                Assert.That(availableSlots[i].End, Is.EqualTo(expectedAvailableSlots[i].End), $"End time of slot {i} does not match.");
             }
         }
     }

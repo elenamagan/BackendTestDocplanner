@@ -1,13 +1,11 @@
 ﻿using BackendTestDocplanner.Controllers.Helpers;
-using BackendTestDocplanner.Controllers.Models;
+using BackendTestDocplanner.Controllers.Schemas;
 using BackendTestDocplanner.Services.Slot;
-using BackendTestDocplanner.Services.Slot.Models;
+using BackendTestDocplanner.Services.Slot.Schemas;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Globalization;
-using System.Net.Http;
-using System.Text;
 
 namespace BackendTestDocplanner.Controllers
 {
@@ -28,21 +26,20 @@ namespace BackendTestDocplanner.Controllers
         #region API endpoints
 
         /// <summary>
-        /// Devuelve el mensaje "Hello World"
-        /// </summary>
-        [HttpGet("helloWorld")]
-        public async Task<IActionResult> HelloWorldAsync()
-        {
-            return Ok(new { Message = "Hello World" });
-        }
-
-        /// <summary>
         /// Gets the available slots for the week of the provided date
         /// </summary>
         /// <param name="date">The date to get the week's available slots in yyyyMMdd format</param>
         /// <returns>The available slots for the week</returns>
+        /// <response code="200">Returns the available slots for the week</response>
+        /// <response code="400">If the request is invalid</response>
+        /// <response code="500">If there was an internal server error</response>
         [HttpGet("GetAvailableSlots")]
-        public async Task<IActionResult> GetAvailableSlotsAsync([FromQuery] string date)
+        [ProducesResponseType(typeof(WeeklyAvailableSlots), 200)]
+        [ProducesResponseType(typeof(MessageResponse), 400)]
+        [ProducesResponseType(typeof(MessageResponse), 500)]
+        public async Task<IActionResult> GetAvailableSlotsAsync(
+            [FromQuery, SwaggerParameter(Description = "Any date in yyyyMMdd format, used to get the available slots for the week that includes this date.")] string date
+        )
         {
             if (!DateTime.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var providedDate))
             {
@@ -60,7 +57,7 @@ namespace BackendTestDocplanner.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
-                    var availability = JsonConvert.DeserializeObject<FacilityWeeklyAvailability>(responseBody);
+                    var availability = JsonConvert.DeserializeObject<FacilityWeeklyAvailability>(responseBody)!;
 
                     var availableSlots = new WeeklyAvailableSlots(
                         availability.Facility.FacilityId,
@@ -78,19 +75,19 @@ namespace BackendTestDocplanner.Controllers
                 else
                 {
                     // Read the response body for details
-                    string errorDetails = response.ReasonPhrase;
+                    string errorDetails = response.ReasonPhrase!;
                     string responseBody = await response.Content.ReadAsStringAsync();
                     if (responseBody != null)
                     {
                         errorDetails += ": " + responseBody;
                     }
-                    var errorResponse = StatusCode((int)response.StatusCode, new { Message = "Failed to get weekly availability", Details = errorDetails });
+                    var errorResponse = StatusCode((int)response.StatusCode, new MessageResponse("Failed to get weekly availability", errorDetails));
                     return errorResponse;
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "An error occurred", Details = ex.Message });
+                return StatusCode(500, new MessageResponse("An error occurred", ex.Message));
             }
         }
 
@@ -99,7 +96,13 @@ namespace BackendTestDocplanner.Controllers
         /// </summary>
         /// <param name="request">The request containing slot details and patient information</param>
         /// <returns>The response from the slot service</returns>
+        /// <response code="200">If the slot was successfully taken</response>
+        /// <response code="400">If the request is invalid</response>
+        /// <response code="500">If there was an internal server error</response>
         [HttpPost("TakeSlot")]
+        [ProducesResponseType(typeof(MessageResponse), 200)]
+        [ProducesResponseType(typeof(MessageResponse), 400)]
+        [ProducesResponseType(typeof(MessageResponse), 500)]
         public async Task<IActionResult> TakeSlotAsync([FromBody] TakeSlotRequest request)
         {
             try
@@ -110,23 +113,23 @@ namespace BackendTestDocplanner.Controllers
                 // If the response is successful, return OK
                 if (response.IsSuccessStatusCode)
                 {
-                    return Ok(new { Message = "Slot successfully taken" });
+                    return Ok(new { Message = "Slot successfully taken", Details = request.ToString() });
                 }
 
                 // Read the response body for details
-                string errorDetails = response.ReasonPhrase;
+                string errorDetails = response.ReasonPhrase!;
                 string responseBody = await response.Content.ReadAsStringAsync();
                 if (responseBody != null)
                 {
                     errorDetails += ": " + responseBody;
                 }
-                var errorResponse = StatusCode((int)response.StatusCode, new { Message = "Failed to take slot", Details = errorDetails });
+                var errorResponse = StatusCode((int)response.StatusCode, new MessageResponse("Failed to take slot", errorDetails));
                 return errorResponse;
             }
             catch (Exception ex)
             {
                 // If there is an exception, return the error message
-                return StatusCode(500, new { Message = "An error occurred", Details = ex.Message });
+                return StatusCode(500, new MessageResponse("An error occurred", ex.Message));
             }
         }
 

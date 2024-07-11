@@ -1,4 +1,4 @@
-﻿namespace BackendTestDocplanner.Services.Slot.Models
+﻿namespace BackendTestDocplanner.Services.Slot.Schemas
 {
     /// <summary>
     /// Defines a daily slot availability as provided in the slot service

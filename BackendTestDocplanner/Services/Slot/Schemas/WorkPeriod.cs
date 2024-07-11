@@ -1,4 +1,4 @@
-﻿namespace BackendTestDocplanner.Services.Slot.Models
+﻿namespace BackendTestDocplanner.Services.Slot.Schemas
 {
     /// <summary>
     /// Defines working hours as provided in the slot service

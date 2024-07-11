@@ -1,20 +1,6 @@
-﻿using BackendTestDocplanner.Controllers;
-using BackendTestDocplanner.Services.Slot;
-using BackendTestDocplanner.Services.Slot.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using BackendTestDocplanner.Services.Slot.Schemas;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace BackendTestDocplanner.TestUI
 {

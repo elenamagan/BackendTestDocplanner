@@ -1,7 +1,5 @@
-﻿using BackendTestDocplanner.Services.Slot.Models;
-using Microsoft.Extensions.Configuration;
+﻿using BackendTestDocplanner.Services.Slot.Schemas;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
 using System.Text;
 
 namespace BackendTestDocplanner.Services.Slot

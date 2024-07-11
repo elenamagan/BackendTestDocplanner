@@ -1,13 +1,8 @@
 using BackendTestDocplanner.Controllers.Helpers;
-using BackendTestDocplanner.Controllers.Models;
-using BackendTestDocplanner.Services.Slot.Models;
+using BackendTestDocplanner.Controllers.Schemas;
+using BackendTestDocplanner.Services.Slot.Schemas;
 using BackendTestDocplanner.TestUI;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace BackendTestDocplanner
 {
@@ -44,7 +39,7 @@ namespace BackendTestDocplanner
             _dataGridView.Columns[6].Name = "Sunday";
 
             _dataGridView.ReadOnly = true;
-            _dataGridView.CellClick += dataGridView_CellClick;
+            _dataGridView.CellClick += dataGridView_CellClick!;
 
             this.Controls.Add(_dataGridView);
 
@@ -106,7 +101,7 @@ namespace BackendTestDocplanner
                 var response = await _httpClient.GetAsync($"Slot/GetAvailableSlots?date={dateString}");
                 response.EnsureSuccessStatusCode();
                 var responseBody = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<WeeklyAvailableSlots>(responseBody);
+                var result = JsonConvert.DeserializeObject<WeeklyAvailableSlots>(responseBody)!;
 
                 DisplayAvailableSlots(result);
             }

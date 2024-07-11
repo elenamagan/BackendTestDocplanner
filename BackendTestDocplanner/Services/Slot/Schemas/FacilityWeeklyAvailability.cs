@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BackendTestDocplanner.Services.Slot.Models
+﻿namespace BackendTestDocplanner.Services.Slot.Schemas
 {
     /// <summary>
     /// Defines the response "Get Availability" of the slot service
