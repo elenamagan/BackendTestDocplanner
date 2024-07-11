@@ -1,5 +1,5 @@
-using BackendTestDocplanner.Controllers;
-using BackendTestDocplanner.Services.Models.Responses;
+using BackendTestDocplanner.Controllers.Helpers;
+using BackendTestDocplanner.Controllers.Models;
 using BackendTestDocplanner.Services.Slot.Models;
 
 namespace BackendTestDocplanner.Tests
@@ -16,22 +16,22 @@ namespace BackendTestDocplanner.Tests
         {
             // Define work period
             var slotDurationMinutes = 30;
-            var workPeriod = new WorkPeriodModel(9, 12, 13, 17); // 9-12 and 13-17
+            var workPeriod = new WorkPeriod(9, 12, 13, 17); // 9-12 and 13-17
 
             // Define busy slots
-            var busySlots = new SlotModel[]
+            var busySlots = new Slot[]
             {
-                new SlotModel(new DateTime(2023, 7, 10, 9, 0, 0), new DateTime(2023, 7, 10, 9, 30, 0)),
-                new SlotModel(new DateTime(2023, 7, 10, 13, 0, 0), new DateTime(2023, 7, 10, 13, 30, 0)),
-                new SlotModel(new DateTime(2023, 7, 10, 15, 0, 0), new DateTime(2023, 7, 10, 15, 30, 0)),
+                new Slot(new DateTime(2023, 7, 10, 9, 0, 0), new DateTime(2023, 7, 10, 9, 30, 0)),
+                new Slot(new DateTime(2023, 7, 10, 13, 0, 0), new DateTime(2023, 7, 10, 13, 30, 0)),
+                new Slot(new DateTime(2023, 7, 10, 15, 0, 0), new DateTime(2023, 7, 10, 15, 30, 0)),
             };
 
             // Create availability for monday
-            var mondayAvailability = new DailyAvailabilityModel(workPeriod, busySlots);
+            var mondayAvailability = new DailyAvailability(workPeriod, busySlots);
 
             // Create GetAvailabilityResponse
-            var availabilityResponse = new GetAvailabilityResponse(
-                new FacilityModel("Test Facility", "Test Address"),
+            var availabilityResponse = new FacilityWeeklyAvailability(
+                new Facility("Test Facility", "Test Address"),
                 slotDurationMinutes,
                 mondayAvailability,
                 null,
@@ -43,32 +43,32 @@ namespace BackendTestDocplanner.Tests
             );
 
             // Define expected available slots for monday
-            var expectedAvailableSlots = new List<SlotModel>
+            var expectedAvailableSlots = new List<Slot>
             {
                 // From 9 to 12
                 // new SlotModel(new DateTime(2023, 7, 10, 9, 0, 0), new DateTime(2023, 7, 10, 9, 30, 0)),
-                new SlotModel(new DateTime(2023, 7, 10, 9, 30, 0), new DateTime(2023, 7, 10, 10, 0, 0)),
-                new SlotModel(new DateTime(2023, 7, 10, 10, 0, 0), new DateTime(2023, 7, 10, 10, 30, 0)),
-                new SlotModel(new DateTime(2023, 7, 10, 10, 30, 0), new DateTime(2023, 7, 10, 11, 0, 0)),
-                new SlotModel(new DateTime(2023, 7, 10, 11, 0, 0), new DateTime(2023, 7, 10, 11, 30, 0)),
-                new SlotModel(new DateTime(2023, 7, 10, 11, 30, 0), new DateTime(2023, 7, 10, 12, 0, 0)),
+                new Slot(new DateTime(2023, 7, 10, 9, 30, 0), new DateTime(2023, 7, 10, 10, 0, 0)),
+                new Slot(new DateTime(2023, 7, 10, 10, 0, 0), new DateTime(2023, 7, 10, 10, 30, 0)),
+                new Slot(new DateTime(2023, 7, 10, 10, 30, 0), new DateTime(2023, 7, 10, 11, 0, 0)),
+                new Slot(new DateTime(2023, 7, 10, 11, 0, 0), new DateTime(2023, 7, 10, 11, 30, 0)),
+                new Slot(new DateTime(2023, 7, 10, 11, 30, 0), new DateTime(2023, 7, 10, 12, 0, 0)),
                 
                 // From 13 to 17
                 // new SlotModel(new DateTime(2023, 7, 10, 13, 0, 0), new DateTime(2023, 7, 10, 13, 30, 0))
-                new SlotModel(new DateTime(2023, 7, 10, 13, 30, 0), new DateTime(2023, 7, 10, 14, 0, 0)),
-                new SlotModel(new DateTime(2023, 7, 10, 14, 0, 0), new DateTime(2023, 7, 10, 14, 30, 0)),
-                new SlotModel(new DateTime(2023, 7, 10, 14, 30, 0), new DateTime(2023, 7, 10, 15, 0, 0)),
+                new Slot(new DateTime(2023, 7, 10, 13, 30, 0), new DateTime(2023, 7, 10, 14, 0, 0)),
+                new Slot(new DateTime(2023, 7, 10, 14, 0, 0), new DateTime(2023, 7, 10, 14, 30, 0)),
+                new Slot(new DateTime(2023, 7, 10, 14, 30, 0), new DateTime(2023, 7, 10, 15, 0, 0)),
                 // new SlotModel(new DateTime(2023, 7, 10, 15, 0, 0), new DateTime(2023, 7, 10, 15, 30, 0)),
-                new SlotModel(new DateTime(2023, 7, 10, 15, 30, 0), new DateTime(2023, 7, 10, 16, 0, 0)),
-                new SlotModel(new DateTime(2023, 7, 10, 16, 0, 0), new DateTime(2023, 7, 10, 16, 30, 0)),
-                new SlotModel(new DateTime(2023, 7, 10, 16, 30, 0), new DateTime(2023, 7, 10, 17, 0, 0))
+                new Slot(new DateTime(2023, 7, 10, 15, 30, 0), new DateTime(2023, 7, 10, 16, 0, 0)),
+                new Slot(new DateTime(2023, 7, 10, 16, 0, 0), new DateTime(2023, 7, 10, 16, 30, 0)),
+                new Slot(new DateTime(2023, 7, 10, 16, 30, 0), new DateTime(2023, 7, 10, 17, 0, 0))
             };
 
             // Calculate available slots for monday
             DateTime baseDate = new DateTime(2023, 7, 10);
 
-            var availableSlots = SlotController.GetAvailableSlots(
-                SlotController.GenerateSlots(baseDate, workPeriod, slotDurationMinutes),
+            var availableSlots = SlotHelper.GetAvailableSlots(
+                SlotHelper.GenerateSlots(baseDate, workPeriod, slotDurationMinutes),
                 availabilityResponse.Monday.BusySlots
             );
 

@@ -1,5 +1,6 @@
-using BackendTestDocplanner.Controllers;
-using BackendTestDocplanner.Services.Models.Responses;
+using BackendTestDocplanner.Controllers.Helpers;
+using BackendTestDocplanner.Controllers.Models;
+using BackendTestDocplanner.TestUI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -42,10 +43,8 @@ namespace BackendTestDocplanner
             _dataGridView.ReadOnly = true;
             _dataGridView.CellClick += dataGridView_CellClick;
 
-            // Add DataGridView to form controls
             this.Controls.Add(_dataGridView);
 
-            // Load data for current week on form initialization
             this.Load += async (s, e) => await LoadWeeklySlotsAsync();
         }
 
@@ -69,8 +68,7 @@ namespace BackendTestDocplanner
 
             UpdatePreviousWeekButtonState();
 
-            // Actualiza el título con las fechas de inicio y fin de semana
-            titleLabel.Text = $"Available slots from {SlotController.GetWeekStartDate(_currentDate).ToString("dd/MM/yyyy")} to {SlotController.GetWeekEndDate(_currentDate).ToString("dd/MM/yyyy")}";
+            titleLabel.Text = $"Available slots from {SlotHelper.GetWeekStartDate(_currentDate).ToString("dd/MM/yyyy")} to {SlotHelper.GetWeekEndDate(_currentDate).ToString("dd/MM/yyyy")}";
         }
 
         private async void BtnNextWeek_Click(object sender, EventArgs e)
@@ -80,15 +78,12 @@ namespace BackendTestDocplanner
 
             UpdatePreviousWeekButtonState();
 
-            // Actualiza el título con las fechas de inicio y fin de semana
-            titleLabel.Text = $"Available slots from {SlotController.GetWeekStartDate(_currentDate).ToString("dd/MM/yyyy")} to {SlotController.GetWeekEndDate(_currentDate).ToString("dd/MM/yyyy")}";
+            titleLabel.Text = $"Available slots from {SlotHelper.GetWeekStartDate(_currentDate).ToString("dd/MM/yyyy")} to {SlotHelper.GetWeekEndDate(_currentDate).ToString("dd/MM/yyyy")}";
         }
         private void UpdatePreviousWeekButtonState()
         {
-            // Calcula la fecha 7 días antes de _currentDate
             var previousWeekDate = _currentDate.AddDays(-7);
 
-            // Comprueba si la fecha calculada es menor o igual a DateTime.Today
             if (previousWeekDate < DateTime.Today)
             {
                 btnPreviousWeek.Enabled = false;
@@ -140,11 +135,26 @@ namespace BackendTestDocplanner
 
         private void dataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Check if a valid cell is clicked and if it has a value
-            var cellValue = _dataGridView[e.ColumnIndex, e.RowIndex].Value;
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && cellValue != null && cellValue != "")
+            // Verificar si se hizo clic en una celda válida y si tiene un valor
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
             {
-                MessageBox.Show("Hello World"); // Show Hello World message
+                var cellValue = _dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                if (cellValue != null && !string.IsNullOrEmpty(cellValue.ToString()))
+                {
+                    // Obtener la fecha y hora de inicio del slot seleccionado
+                    string startDateTime = _dataGridView.Columns[e.ColumnIndex].HeaderText + " " + _dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+
+                    // Abrir el formulario TakeSlotForm
+                    using (var takeSlotForm = new TakeSlotForm(startDateTime))
+                    {
+                        var result = takeSlotForm.ShowDialog();
+                        if (result == DialogResult.OK)
+                        {
+                            // Mostrar mensaje de confirmación
+                            MessageBox.Show("Slot taken successfully");
+                        }
+                    }
+                }
             }
         }
     }

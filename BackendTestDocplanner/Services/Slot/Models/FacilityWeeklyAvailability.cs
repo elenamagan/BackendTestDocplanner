@@ -1,21 +1,20 @@
-﻿using BackendTestDocplanner.Services.Slot.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackendTestDocplanner.Services.Models.Responses
+namespace BackendTestDocplanner.Services.Slot.Models
 {
     /// <summary>
     /// Defines the response "Get Availability" of the slot service
     /// </summary>
-    public class GetAvailabilityResponse
+    public class FacilityWeeklyAvailability
     {
         /// <summary>
         /// Facility information
         /// </summary>
-        public FacilityModel Facility { get; set; }
+        public Facility Facility { get; set; }
 
         /// <summary>
         /// Duration of the slot in minutes
@@ -25,39 +24,39 @@ namespace BackendTestDocplanner.Services.Models.Responses
         /// <summary>
         /// Slot availability on monday
         /// </summary>
-        public DailyAvailabilityModel? Monday { get; set; }
+        public DailyAvailability? Monday { get; set; }
 
         /// <summary>
         /// Slot availability on monday
         /// </summary>
-        public DailyAvailabilityModel? Tuesday { get; set; }
+        public DailyAvailability? Tuesday { get; set; }
 
         /// <summary>
         /// Slot availability on monday
         /// </summary>
-        public DailyAvailabilityModel? Wednesday { get; set; }
+        public DailyAvailability? Wednesday { get; set; }
 
         /// <summary>
         /// Slot availability on monday
         /// </summary>
-        public DailyAvailabilityModel? Thursday { get; set; }
+        public DailyAvailability? Thursday { get; set; }
 
         /// <summary>
         /// Slot availability on monday
         /// </summary>
-        public DailyAvailabilityModel? Friday { get; set; }
+        public DailyAvailability? Friday { get; set; }
 
         /// <summary>
         /// Slot availability on monday
         /// </summary>
-        public DailyAvailabilityModel? Saturday { get; set; }
+        public DailyAvailability? Saturday { get; set; }
 
         /// <summary>
         /// Slot availability on monday
         /// </summary>
-        public DailyAvailabilityModel? Sunday { get; set; }
+        public DailyAvailability? Sunday { get; set; }
 
-        public GetAvailabilityResponse(FacilityModel facility, int slotDurationMinutes, DailyAvailabilityModel? monday, DailyAvailabilityModel? tuesday, DailyAvailabilityModel? wednesday, DailyAvailabilityModel? thursday, DailyAvailabilityModel? friday, DailyAvailabilityModel? saturday, DailyAvailabilityModel? sunday)
+        public FacilityWeeklyAvailability(Facility facility, int slotDurationMinutes, DailyAvailability? monday, DailyAvailability? tuesday, DailyAvailability? wednesday, DailyAvailability? thursday, DailyAvailability? friday, DailyAvailability? saturday, DailyAvailability? sunday)
         {
             Facility = facility;
             SlotDurationMinutes = slotDurationMinutes;

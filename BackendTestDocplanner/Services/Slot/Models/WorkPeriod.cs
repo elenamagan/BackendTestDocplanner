@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines working hours as provided in the slot service
     /// </summary>
-    public class WorkPeriodModel
+    public class WorkPeriod
     {
         /// <summary>
         /// Morning opening hour (int, from 0 to 23)
@@ -25,7 +25,7 @@
         /// </summary>
         public int EndHour { get; set; }
 
-        public WorkPeriodModel(int startHour, int lunchStartHour, int lunchEndHour, int endHour)
+        public WorkPeriod(int startHour, int lunchStartHour, int lunchEndHour, int endHour)
         {
             StartHour = startHour;
             LunchStartHour = lunchStartHour;

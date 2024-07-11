@@ -1,4 +1,4 @@
-﻿using BackendTestDocplanner.Controllers;
+﻿using BackendTestDocplanner.Controllers.Helpers;
 
 namespace BackendTestDocplanner
 {
@@ -32,7 +32,7 @@ namespace BackendTestDocplanner
                 TextAlign = ContentAlignment.BottomRight,
                 BackColor = Color.Transparent,
                 Font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold),
-                Text = $"Available slots from {SlotController.GetWeekStartDate(_currentDate).ToString("dd/MM/yyyy")} to {SlotController.GetWeekEndDate(_currentDate).ToString("dd/MM/yyyy")}"
+                Text = $"Available slots from {SlotHelper.GetWeekStartDate(_currentDate).ToString("dd/MM/yyyy")} to {SlotHelper.GetWeekEndDate(_currentDate).ToString("dd/MM/yyyy")}"
             };
 
             this.Controls.Add(titleLabel);

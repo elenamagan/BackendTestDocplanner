@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines a slot as provided in the slot service
     /// </summary>
-    public class SlotModel
+    public class Slot
     {
         /// <summary>
         /// Initial time of the slot. For simplicity, it doesn't consider timezones.
@@ -15,7 +15,7 @@
         /// </summary>
         public DateTime End { get; set; }
 
-        public SlotModel(DateTime start, DateTime end)
+        public Slot(DateTime start, DateTime end)
         {
             Start = start;
             End = end;

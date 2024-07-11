@@ -1,4 +1,4 @@
-﻿using BackendTestDocplanner.Services.Models.Responses;
+﻿using BackendTestDocplanner.Services.Slot.Models;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -19,13 +19,13 @@ namespace BackendTestDocplanner.Services.Slot
         /// </summary>
         /// <param name="date">The date in yyyyMMdd format. Must be start of the week (monday)</param>
         /// <returns>The availability response</returns>
-        public async Task<GetAvailabilityResponse> GetWeeklyAvailabilityAsync(string date)
+        public async Task<FacilityWeeklyAvailability> GetWeeklyAvailabilityAsync(string date)
         {
             string requestUri = $"api/availability/GetWeeklyAvailability/{date}";
             HttpResponseMessage response = await _httpClient.GetAsync(requestUri);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            GetAvailabilityResponse availabilityResponse = JsonConvert.DeserializeObject<GetAvailabilityResponse>(responseBody);
+            FacilityWeeklyAvailability availabilityResponse = JsonConvert.DeserializeObject<FacilityWeeklyAvailability>(responseBody);
             return availabilityResponse;
         }
     }

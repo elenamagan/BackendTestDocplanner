@@ -1,6 +1,6 @@
 ﻿using BackendTestDocplanner.Services.Slot.Models;
 
-namespace BackendTestDocplanner.Services.Models.Responses
+namespace BackendTestDocplanner.Controllers.Models
 {
     /// <summary>
     /// Defines the response "Weekly Available Slots" of the slot controller
@@ -10,39 +10,39 @@ namespace BackendTestDocplanner.Services.Models.Responses
         /// <summary>
         /// Slot availability on monday
         /// </summary>
-        public List<SlotModel> Monday { get; set; }
+        public List<Slot> Monday { get; set; }
 
         /// <summary>
         /// Slot availability on monday
         /// </summary>
-        public List<SlotModel> Tuesday { get; set; }
+        public List<Slot> Tuesday { get; set; }
 
         /// <summary>
         /// Slot availability on monday
         /// </summary>
-        public List<SlotModel> Wednesday { get; set; }
+        public List<Slot> Wednesday { get; set; }
 
         /// <summary>
         /// Slot availability on monday
         /// </summary>
-        public List<SlotModel> Thursday { get; set; }
+        public List<Slot> Thursday { get; set; }
 
         /// <summary>
         /// Slot availability on monday
         /// </summary>
-        public List<SlotModel> Friday { get; set; }
+        public List<Slot> Friday { get; set; }
 
         /// <summary>
         /// Slot availability on monday
         /// </summary>
-        public List<SlotModel> Saturday { get; set; }
+        public List<Slot> Saturday { get; set; }
 
         /// <summary>
         /// Slot availability on monday
         /// </summary>
-        public List<SlotModel> Sunday { get; set; }
+        public List<Slot> Sunday { get; set; }
 
-        public WeeklyAvailableSlots(List<SlotModel> monday, List<SlotModel> tuesday, List<SlotModel> wednesday, List<SlotModel> thursday, List<SlotModel> friday, List<SlotModel> saturday, List<SlotModel> sunday)
+        public WeeklyAvailableSlots(List<Slot> monday, List<Slot> tuesday, List<Slot> wednesday, List<Slot> thursday, List<Slot> friday, List<Slot> saturday, List<Slot> sunday)
         {
             Monday = monday;
             Tuesday = tuesday;

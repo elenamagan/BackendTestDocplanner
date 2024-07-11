@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines a patient as provided in the slot service
     /// </summary>
-    public class PatientModel
+    public class Patient
     {
         /// <summary>
         /// Patient name
@@ -25,7 +25,7 @@
         /// </summary>
         public string Phone { get; set; }
 
-        public PatientModel(string name, string secondName, string email, string phone)
+        public Patient(string name, string secondName, string email, string phone)
         {
             Name = name;
             SecondName = secondName;

@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines a facility as provided in the slot service
     /// </summary>
-    public class FacilityModel
+    public class Facility
     {
         /// <summary>
         /// Facility name
@@ -15,7 +15,7 @@
         /// </summary>
         public string Address { get; set; }
 
-        public FacilityModel(string name, string address)
+        public Facility(string name, string address)
         {
             Name = name;
             Address = address;

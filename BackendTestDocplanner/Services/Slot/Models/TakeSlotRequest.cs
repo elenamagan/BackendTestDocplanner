@@ -1,11 +1,9 @@
-﻿using BackendTestDocplanner.Services.Slot.Models;
-
-namespace BackendTestDocplanner.Services.Models.Requests
+﻿namespace BackendTestDocplanner.Services.Slot.Models
 {
     /// <summary>
     /// Defines the request "Take a slot" of the slot service
     /// </summary>
-    public class TakeASlotRequest
+    public class TakeSlotRequest
     {
         /// <summary>
         /// Initial time of the slot. For simplicity, it doesn't consider timezones.
@@ -27,9 +25,9 @@ namespace BackendTestDocplanner.Services.Models.Requests
         /// <summary>
         /// Patient information
         /// </summary>
-        public PatientModel Patient { get; set; }
+        public Patient Patient { get; set; }
 
-        public TakeASlotRequest(string start, string end, string comments, PatientModel patient)
+        public TakeSlotRequest(string start, string end, string comments, Patient patient)
         {
             Start = start;
             End = end;
