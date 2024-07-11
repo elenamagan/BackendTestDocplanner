@@ -6,6 +6,11 @@
     public class Facility
     {
         /// <summary>
+        /// Facility id
+        /// </summary>
+        public string FacilityId { get; set; }
+
+        /// <summary>
         /// Facility name
         /// </summary>
         public string Name { get; set; }
@@ -15,8 +20,9 @@
         /// </summary>
         public string Address { get; set; }
 
-        public Facility(string name, string address)
+        public Facility(string facilityId, string name, string address)
         {
+            FacilityId = facilityId;
             Name = name;
             Address = address;
         }

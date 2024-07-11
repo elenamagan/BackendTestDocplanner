@@ -8,6 +8,11 @@ namespace BackendTestDocplanner.Controllers.Models
     public class WeeklyAvailableSlots
     {
         /// <summary>
+        /// Facility id
+        /// </summary>
+        public string FacilityId { get; set; }
+
+        /// <summary>
         /// Slot availability on monday
         /// </summary>
         public List<Slot> Monday { get; set; }
@@ -42,8 +47,9 @@ namespace BackendTestDocplanner.Controllers.Models
         /// </summary>
         public List<Slot> Sunday { get; set; }
 
-        public WeeklyAvailableSlots(List<Slot> monday, List<Slot> tuesday, List<Slot> wednesday, List<Slot> thursday, List<Slot> friday, List<Slot> saturday, List<Slot> sunday)
+        public WeeklyAvailableSlots(string facilityId, List<Slot> monday, List<Slot> tuesday, List<Slot> wednesday, List<Slot> thursday, List<Slot> friday, List<Slot> saturday, List<Slot> sunday)
         {
+            FacilityId = facilityId;
             Monday = monday;
             Tuesday = tuesday;
             Wednesday = wednesday;

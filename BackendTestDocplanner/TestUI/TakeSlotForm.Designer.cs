@@ -4,6 +4,7 @@
     {
         private System.ComponentModel.IContainer components = null;
         private Label lblStartDateTime;
+        private Label lblEndDateTime;
         private TextBox txtComments;
         private TextBox txtName;
         private TextBox txtSecondName;
@@ -23,6 +24,7 @@
         private void InitializeComponent()
         {
             this.lblStartDateTime = new Label();
+            this.lblEndDateTime = new Label();
             this.txtComments = new TextBox();
             this.txtName = new TextBox();
             this.txtSecondName = new TextBox();
@@ -67,7 +69,7 @@
             this.txtSecondName.Name = "txtSecondName";
             this.txtSecondName.Size = new Size(260, 23);
             this.txtSecondName.TabIndex = 3;
-            this.txtSecondName.PlaceholderText = "Last Name";
+            this.txtSecondName.PlaceholderText = "Second Name";
 
             // 
             // txtEmail

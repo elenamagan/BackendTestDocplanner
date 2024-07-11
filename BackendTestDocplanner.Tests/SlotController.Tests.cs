@@ -1,14 +1,21 @@
 using BackendTestDocplanner.Controllers.Helpers;
 using BackendTestDocplanner.Controllers.Models;
+using BackendTestDocplanner.Services.Slot;
 using BackendTestDocplanner.Services.Slot.Models;
+using Moq;
 
 namespace BackendTestDocplanner.Tests
 {
     public class Tests
     {
+        private Mock<HttpClient> _mockHttpClient;
+        private SlotService _slotService;
+
         [SetUp]
         public void Setup()
         {
+            _mockHttpClient = new Mock<HttpClient>();
+            _slotService = new SlotService(_mockHttpClient.Object);
         }
 
         [Test]
@@ -31,7 +38,7 @@ namespace BackendTestDocplanner.Tests
 
             // Create GetAvailabilityResponse
             var availabilityResponse = new FacilityWeeklyAvailability(
-                new Facility("Test Facility", "Test Address"),
+                new Facility("1234", "Test Facility", "Test Address"),
                 slotDurationMinutes,
                 mondayAvailability,
                 null,

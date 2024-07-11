@@ -1,10 +1,16 @@
-﻿using BackendTestDocplanner.Services.Slot.Models;
+﻿using BackendTestDocplanner.Controllers;
+using BackendTestDocplanner.Services.Slot;
+using BackendTestDocplanner.Services.Slot.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,17 +21,22 @@ namespace BackendTestDocplanner.TestUI
     public partial class TakeSlotForm : Form
     {
         private readonly string _startDateTime;
+        private readonly string _endDateTime;
+        private readonly string _facilityId;
 
-        public TakeSlotForm(string startDateTime)
+        public TakeSlotForm(string facilityId, string startDateTime, string endDateTime)
         {
             InitializeComponent();
+            _facilityId = facilityId;
             _startDateTime = startDateTime;
+            _endDateTime = endDateTime;
 
-            // Display the start date and time of the selected slot
+            // Display the start and end date and time of the selected slot
             lblStartDateTime.Text = $"Start Date and Time: {_startDateTime}";
+            lblEndDateTime.Text = $"End Date and Time: {_endDateTime}";
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object sender, EventArgs e)
         {
             // Get the values entered by the user
             string comments = txtComments.Text;
@@ -38,21 +49,35 @@ namespace BackendTestDocplanner.TestUI
             Patient patient = new Patient(name, secondName, email, phone);
 
             // Create the TakeASlotRequest object
-            TakeSlotRequest takeSlotRequest = new TakeSlotRequest(_startDateTime, null, comments, patient);
+            TakeSlotRequest takeSlotRequest = new TakeSlotRequest(_facilityId, _startDateTime, _endDateTime, comments, patient);
 
-            // Here you should perform any additional logic, such as sending the object to a service or storing it somewhere
+            // Call the TakeSlotAsync method from the controller
+            HttpClient _httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:5001") };
+            string jsonContent = JsonConvert.SerializeObject(takeSlotRequest);
+            StringContent content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _httpClient.PostAsync($"Slot/TakeSlot", content);
 
-            // Display confirmation message
-            MessageBox.Show("Information saved successfully:\n" +
-                            $"Start Date and Time: {takeSlotRequest.Start}\n" +
-                            $"Comments: {takeSlotRequest.Comments}\n" +
-                            $"Patient: {takeSlotRequest.Patient.Name} {takeSlotRequest.Patient.SecondName}\n" +
-                            $"Email: {takeSlotRequest.Patient.Email}\n" +
-                            $"Phone: {takeSlotRequest.Patient.Phone}");
+            if (response.IsSuccessStatusCode)
+            {
+                // Display confirmation message
+                MessageBox.Show("Slot succesfully taken:\n" +
+                                $"Facility Id: {takeSlotRequest.FacilityId}\n" +
+                                $"Start Date and Time: {takeSlotRequest.Start}\n" +
+                                $"End Date and Time: {takeSlotRequest.End}\n" +
+                                $"Comments: {takeSlotRequest.Comments}\n" +
+                                $"Patient: {takeSlotRequest.Patient.Name} {takeSlotRequest.Patient.SecondName}\n" +
+                                $"Email: {takeSlotRequest.Patient.Email}\n" +
+                                $"Phone: {takeSlotRequest.Patient.Phone}");
 
-            // Close the form with DialogResult OK to indicate that the operation was successful
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+                // Close the form with DialogResult OK to indicate that the operation was successful
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            else
+            {
+                // Handle error
+                MessageBox.Show("Failed to save slot information.");
+            }
         }
     }
 }

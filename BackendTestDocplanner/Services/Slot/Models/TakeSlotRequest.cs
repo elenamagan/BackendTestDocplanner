@@ -6,6 +6,11 @@
     public class TakeSlotRequest
     {
         /// <summary>
+        /// Facility id
+        /// </summary>
+        public string FacilityId { get; set; }
+
+        /// <summary>
         /// Initial time of the slot. For simplicity, it doesn't consider timezones.
         /// Format YYYY-MM-dd HH:mm:ss
         /// </summary>
@@ -27,8 +32,9 @@
         /// </summary>
         public Patient Patient { get; set; }
 
-        public TakeSlotRequest(string start, string end, string comments, Patient patient)
+        public TakeSlotRequest(string facilityId, string start, string end, string comments, Patient patient)
         {
+            FacilityId = facilityId;
             Start = start;
             End = end;
             Comments = comments;

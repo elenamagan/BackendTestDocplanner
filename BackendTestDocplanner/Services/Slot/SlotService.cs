@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace BackendTestDocplanner.Services.Slot
 {
@@ -19,14 +20,25 @@ namespace BackendTestDocplanner.Services.Slot
         /// </summary>
         /// <param name="date">The date in yyyyMMdd format. Must be start of the week (monday)</param>
         /// <returns>The availability response</returns>
-        public async Task<FacilityWeeklyAvailability> GetWeeklyAvailabilityAsync(string date)
+        public async Task<HttpResponseMessage> GetWeeklyAvailabilityAsync(string date)
         {
             string requestUri = $"api/availability/GetWeeklyAvailability/{date}";
             HttpResponseMessage response = await _httpClient.GetAsync(requestUri);
-            response.EnsureSuccessStatusCode();
-            string responseBody = await response.Content.ReadAsStringAsync();
-            FacilityWeeklyAvailability availabilityResponse = JsonConvert.DeserializeObject<FacilityWeeklyAvailability>(responseBody);
-            return availabilityResponse;
+            return response;
+        }
+
+        /// <summary>
+        /// Takes a slot by sending a POST request to the slot service API
+        /// </summary>
+        /// <param name="takeSlotRequest">The request containing slot details and patient information</param>
+        /// <returns>The response from the API</returns>
+        public async Task<HttpResponseMessage> TakeSlotAsync(TakeSlotRequest takeSlotRequest)
+        {
+            string requestUri = "api/availability/TakeSlot";
+            string jsonContent = JsonConvert.SerializeObject(takeSlotRequest);
+            StringContent content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _httpClient.PostAsync(requestUri, content);
+            return response;
         }
     }
 }

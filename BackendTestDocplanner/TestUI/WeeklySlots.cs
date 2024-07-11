@@ -1,5 +1,6 @@
 using BackendTestDocplanner.Controllers.Helpers;
 using BackendTestDocplanner.Controllers.Models;
+using BackendTestDocplanner.Services.Slot.Models;
 using BackendTestDocplanner.TestUI;
 using Newtonsoft.Json;
 using System;
@@ -15,6 +16,8 @@ namespace BackendTestDocplanner
 
         private readonly HttpClient _httpClient;
         private readonly DataGridView _dataGridView;
+
+        private string _facilityId = "";
 
         private DateTime _currentDate = DateTime.Today;
 
@@ -115,6 +118,8 @@ namespace BackendTestDocplanner
 
         private void DisplayAvailableSlots(WeeklyAvailableSlots slots)
         {
+            _facilityId = slots.FacilityId;
+
             _dataGridView.Rows.Clear();
             var maxRows = Math.Max(slots.Monday.Count, Math.Max(slots.Tuesday.Count,
                         Math.Max(slots.Wednesday.Count, Math.Max(slots.Thursday.Count,
@@ -123,36 +128,40 @@ namespace BackendTestDocplanner
             for (int i = 0; i < maxRows; i++)
             {
                 _dataGridView.Rows.Add();
-                _dataGridView.Rows[i].Cells[0].Value = i < slots.Monday.Count ? slots.Monday[i].Start.ToString("HH:mm") : "";
-                _dataGridView.Rows[i].Cells[1].Value = i < slots.Tuesday.Count ? slots.Tuesday[i].Start.ToString("HH:mm") : "";
-                _dataGridView.Rows[i].Cells[2].Value = i < slots.Wednesday.Count ? slots.Wednesday[i].Start.ToString("HH:mm") : "";
-                _dataGridView.Rows[i].Cells[3].Value = i < slots.Thursday.Count ? slots.Thursday[i].Start.ToString("HH:mm") : "";
-                _dataGridView.Rows[i].Cells[4].Value = i < slots.Friday.Count ? slots.Friday[i].Start.ToString("HH:mm") : "";
-                _dataGridView.Rows[i].Cells[5].Value = i < slots.Saturday.Count ? slots.Saturday[i].Start.ToString("HH:mm") : "";
-                _dataGridView.Rows[i].Cells[6].Value = i < slots.Sunday.Count ? slots.Sunday[i].Start.ToString("HH:mm") : "";
+                _dataGridView.Rows[i].Cells[0].Value = i < slots.Monday.Count ? $"{slots.Monday[i].Start.ToString("HH:mm")}" : "";
+                _dataGridView.Rows[i].Cells[1].Value = i < slots.Tuesday.Count ? $"{slots.Tuesday[i].Start.ToString("HH:mm")}" : "";
+                _dataGridView.Rows[i].Cells[2].Value = i < slots.Wednesday.Count ? $"{slots.Wednesday[i].Start.ToString("HH:mm")}" : "";
+                _dataGridView.Rows[i].Cells[3].Value = i < slots.Thursday.Count ? $"{slots.Thursday[i].Start.ToString("HH:mm")}" : "";
+                _dataGridView.Rows[i].Cells[4].Value = i < slots.Friday.Count ? $"{slots.Friday[i].Start.ToString("HH:mm")}" : "";
+                _dataGridView.Rows[i].Cells[5].Value = i < slots.Saturday.Count ? $"{slots.Saturday[i].Start.ToString("HH:mm")}" : "";
+                _dataGridView.Rows[i].Cells[6].Value = i < slots.Sunday.Count ? $"{slots.Sunday[i].Start.ToString("HH:mm")}" : "";
+
+                // Store the actual Start and End DateTime objects in Tag for later use
+                _dataGridView.Rows[i].Cells[0].Tag = i < slots.Monday.Count ? slots.Monday[i] : null;
+                _dataGridView.Rows[i].Cells[1].Tag = i < slots.Tuesday.Count ? slots.Tuesday[i] : null;
+                _dataGridView.Rows[i].Cells[2].Tag = i < slots.Wednesday.Count ? slots.Wednesday[i] : null;
+                _dataGridView.Rows[i].Cells[3].Tag = i < slots.Thursday.Count ? slots.Thursday[i] : null;
+                _dataGridView.Rows[i].Cells[4].Tag = i < slots.Friday.Count ? slots.Friday[i] : null;
+                _dataGridView.Rows[i].Cells[5].Tag = i < slots.Saturday.Count ? slots.Saturday[i] : null;
+                _dataGridView.Rows[i].Cells[6].Tag = i < slots.Sunday.Count ? slots.Sunday[i] : null;
             }
         }
 
         private void dataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Verificar si se hizo clic en una celda válida y si tiene un valor
+            // Check if a valid cell is clicked and if it has a value
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
             {
-                var cellValue = _dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
-                if (cellValue != null && !string.IsNullOrEmpty(cellValue.ToString()))
+                var slot = _dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag as Slot;
+                if (slot != null)
                 {
-                    // Obtener la fecha y hora de inicio del slot seleccionado
-                    string startDateTime = _dataGridView.Columns[e.ColumnIndex].HeaderText + " " + _dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                    string startDateTime = slot.Start.ToString("yyyy-MM-dd HH:mm:ss");
+                    string endDateTime = slot.End.ToString("yyyy-MM-dd HH:mm:ss");
 
-                    // Abrir el formulario TakeSlotForm
-                    using (var takeSlotForm = new TakeSlotForm(startDateTime))
+                    // Open the TakeSlotForm with both start and end DateTime
+                    using (var takeSlotForm = new TakeSlotForm(_facilityId, startDateTime, endDateTime))
                     {
                         var result = takeSlotForm.ShowDialog();
-                        if (result == DialogResult.OK)
-                        {
-                            // Mostrar mensaje de confirmación
-                            MessageBox.Show("Slot taken successfully");
-                        }
                     }
                 }
             }
