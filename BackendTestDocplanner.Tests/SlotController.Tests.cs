@@ -1,13 +1,36 @@
 using BackendTestDocplanner.Controllers.Helpers;
+using BackendTestDocplanner.Services.Slot;
 using BackendTestDocplanner.Services.Slot.Schemas;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 
 namespace BackendTestDocplanner.Tests
 {
     public class Tests
     {
-        [SetUp]
-        public void Setup()
+        [SetUpFixture]
+        public class TestSetup
         {
+            public static TestServer Server { get; private set; }
+            public static HttpClient Client { get; private set; }
+
+            [OneTimeSetUp]
+            public void OneTimeSetup()
+            {
+                var builder = new WebHostBuilder()
+                    .UseStartup<BackendTestDocplanner.Startup>(); // Ajusta según el Startup de tu aplicación
+
+                Server = new TestServer(builder);
+
+                Client = Server.CreateClient();
+            }
+
+            [OneTimeTearDown]
+            public void OneTimeTearDown()
+            {
+                Client.Dispose();
+                Server.Dispose();
+            }
         }
 
         [Test]

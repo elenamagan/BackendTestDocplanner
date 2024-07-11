@@ -1,8 +1,10 @@
 using BackendTestDocplanner.Services.Slot;
 using BackendTestDocplanner.Services.Slot.Schemas;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Net.Http.Headers;
 
@@ -10,59 +12,32 @@ namespace BackendTestDocplanner
 {
     public static class Program
     {
-        /// <summary>
-        /// Application's configuration, loaded on Main() from appsettings.json
-        /// </summary>
-        private static IConfiguration? Configuration { get; set; }
-
-        static void Main()
+        public static async Task Main(string[] args)
         {
-            // API configuration and launch
-            // · Adds swagger with defined controller's endpoints
-            // · Uses HTTPS with "safe" certificate from ./Certificates (in this case, self-signed, but easily changed)
-            // · Runs API in a separate threat to also launch a WindowsForms UI on start
+            var host = CreateHostBuilder(args).Build();
 
-            Configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .Build();
-
-            var builder = WebApplication.CreateBuilder();
-
-            // Slot service configuration
-            builder.Services.AddHttpClient<SlotService>(client =>
-            {
-                string username = Configuration["SlotService:Username"] ?? throw new InvalidOperationException("Please provide a username for the Slot Service.");
-                string password = Configuration["SlotService:Password"] ?? throw new InvalidOperationException("Please provide a username for the Slot Service.");
-
-                client.BaseAddress = new Uri("https://draliatest.azurewebsites.net/");
-                var authHeaderValue = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes($"{username}:{password}"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authHeaderValue);
-            });
-
-            // API and swagger configuration
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Docplanner Backend Test API", Version = "v1" });
-                c.EnableAnnotations();
-                c.SchemaFilter<TakeSlotRequestExample>();
-            });
-
-            var apiHost = builder.Build();
-            apiHost.UseSwagger();
-            apiHost.UseSwaggerUI();
-            apiHost.UseHttpsRedirection();
-            apiHost.UseAuthorization();
-            apiHost.MapControllers();
-
-            // Runs API in another thread
-            Task.Run(() => apiHost.Run());
+            // Runs API on a separate thread
+            Task webTask = Task.Run(() => host.Run());
 
             // Starts WindowsForms UI
             // MUST BE OPEN for the API to keep running
-            Application.Run(new WeeklySlots());
+            var form = new WeeklySlots();
+            Application.Run(form);
+
+            await webTask;
         }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    // In Startup.cs: API configuration and launch
+                    // · Adds swagger with defined controller's endpoints
+                    // · Uses HTTPS with "safe" certificate from ./Certificates (in this case, self-signed, but easily changed)
+                    // · Runs API in a separate threat to launch the WindowsForms UI on start
+
+                    webBuilder.UseStartup<Startup>();
+                });
     }
+
 }
