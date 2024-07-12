@@ -11,8 +11,9 @@ namespace BackendTestDocplanner.TestUI
         private readonly string _endDateTime;
         private readonly string _facilityId;
         private readonly string _baseUrl;
+		private readonly HttpClient _httpClient;
 
-        public TakeSlotForm(string facilityId, string startDateTime, string endDateTime)
+		public TakeSlotForm(string facilityId, string startDateTime, string endDateTime)
         {
             InitializeComponent();
             _facilityId = facilityId;
@@ -23,15 +24,24 @@ namespace BackendTestDocplanner.TestUI
             lblStartDateTime.Text = $"Start Date and Time: {_startDateTime}";
             lblEndDateTime.Text = $"End Date and Time: {_endDateTime}";
 
-            // Load configuration and get the base URL
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .Build();
+			// Load configuration and get the base URL
+			var configuration = new ConfigurationBuilder()
+				.SetBasePath(AppContext.BaseDirectory)
+				.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+				.Build();
 
-            _baseUrl = configuration["Kestrel:Endpoints:Https:Url"] ?? "https://localhost:5001";
+			string baseUrl = configuration["Kestrel:Endpoints:Https:Url"] ?? "https://localhost:5001";
 
-        }
+			// Crear un HttpClientHandler que ignore los errores de certificado
+			var handler = new HttpClientHandler
+			{
+				ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+			};
+
+			// Crear el HttpClient usando el handler personalizado
+			_httpClient = new HttpClient(handler) { BaseAddress = new Uri(baseUrl) };
+
+		}
 
         private async void btnSave_Click(object sender, EventArgs e)
         {
@@ -49,7 +59,6 @@ namespace BackendTestDocplanner.TestUI
             TakeSlotRequest takeSlotRequest = new TakeSlotRequest(_facilityId, _startDateTime, _endDateTime, comments, patient);
 
             // Call the TakeSlotAsync method from the controller
-            HttpClient _httpClient = new HttpClient { BaseAddress = new Uri(_baseUrl) };
             string jsonContent = JsonConvert.SerializeObject(takeSlotRequest);
             StringContent content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await _httpClient.PostAsync($"Slot/TakeSlot", content);

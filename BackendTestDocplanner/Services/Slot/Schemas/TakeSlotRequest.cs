@@ -56,7 +56,12 @@ namespace BackendTestDocplanner.Services.Slot.Schemas
             Comments = comments;
             Patient = patient;
         }
-    }
+
+		public override string ToString()
+		{
+			return $"TakeSlotRequest(FacilityId: {FacilityId}, Start: {Start}, End: {End}, Comments: {Comments}, Patient: {Patient})";
+		}
+	}
 
     public class TakeSlotRequestExample : ISchemaFilter
     {

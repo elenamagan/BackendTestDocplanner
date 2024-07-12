@@ -45,5 +45,10 @@ namespace BackendTestDocplanner.Services.Slot.Schemas
             Email = email;
             Phone = phone;
         }
-    }
+
+		public override string ToString()
+		{
+			return $"Patient(Name: {Name}, SecondName: {SecondName}, Email: {Email}, Phone: {Phone})";
+		}
+	}
 }

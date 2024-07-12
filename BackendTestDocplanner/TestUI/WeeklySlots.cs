@@ -20,16 +20,24 @@ namespace BackendTestDocplanner
         public WeeklySlots()
         {
             InitializeComponent();
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .Build();
-            string baseUrl = configuration["Kestrel:Endpoints:Https:Url"] ?? "https://localhost:5001";
+			var configuration = new ConfigurationBuilder()
+	            .SetBasePath(AppContext.BaseDirectory)
+	            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+	            .Build();
 
-            _httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
+			string baseUrl = configuration["Kestrel:Endpoints:Https:Url"] ?? "https://localhost:5001";
 
-            // Initialize DataGridView
-            _dataGridView = new DataGridView
+			// Crear un HttpClientHandler que ignore los errores de certificado
+			var handler = new HttpClientHandler
+			{
+				ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+			};
+
+			// Crear el HttpClient usando el handler personalizado
+			_httpClient = new HttpClient(handler) { BaseAddress = new Uri(baseUrl) };
+
+			// Initialize DataGridView
+			_dataGridView = new DataGridView
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 7,
