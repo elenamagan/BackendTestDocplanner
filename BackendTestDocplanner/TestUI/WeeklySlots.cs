@@ -149,7 +149,7 @@ namespace BackendTestDocplanner
             }
         }
 
-        private void dataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        private async void dataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             // Check if a valid cell is clicked and if it has a value
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
@@ -164,6 +164,7 @@ namespace BackendTestDocplanner
                     using (var takeSlotForm = new TakeSlotForm(_facilityId, startDateTime, endDateTime))
                     {
                         var result = takeSlotForm.ShowDialog();
+                        await LoadSlotsForDate(_currentDate);
                     }
                 }
             }
