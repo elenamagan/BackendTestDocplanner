@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /BackendTestDocplanner/appsettings.json
 /BackendTestDocplanner.Tests/appsettings.json
+/BackendTestDocplanner/Certificates/localhost.pfx
