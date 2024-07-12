@@ -116,7 +116,7 @@ namespace BackendTestDocplanner.Controllers
                     return Ok(new { Message = "Slot successfully taken", Details = request.ToString() });
                 }
 
-                // Read the response body for details
+                // If not, read the response body for details
                 string errorDetails = response.ReasonPhrase!;
                 string responseBody = await response.Content.ReadAsStringAsync();
                 if (responseBody != null)

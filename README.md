@@ -15,13 +15,13 @@ This repository contains a .NET project with a C# backend API and a Windows Form
 First, clone the repository to your local machine. Navigate to the desired directory and run:
 
 ```
-git clone https://github.com/yourusername/BackendTestDocplanner.git
+git clone https://github.com/elenamagan/BackendTestDocplanner
 ```
 
 After cloning, you will have two directories:
 
-· `BackendTestDocplanner`
-· `BackendTestDocplanner.Tests`
+* `BackendTestDocplanner`
+* `BackendTestDocplanner.Tests`
 
 ### Configuration
 

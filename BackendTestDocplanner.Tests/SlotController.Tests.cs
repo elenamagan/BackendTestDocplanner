@@ -24,13 +24,13 @@ namespace BackendTestDocplanner.Tests
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
-            // Obtén el username y el password desde la configuración
+            // Get username and password from configuration file
             string username = configuration["SlotService:Username"] ?? throw new InvalidOperationException("Please provide a username for the Slot Service.");
             string password = configuration["SlotService:Password"] ?? throw new InvalidOperationException("Please provide a password for the Slot Service.");
 
             var authHeaderValue = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes($"{username}:{password}"));
 
-            // Configuración básica de HttpClient (reemplazar con la configuración real si es necesario)
+            // HttpClient basic configuration for the slot service
             var httpClient = new HttpClient
             {
                 BaseAddress = new Uri("https://draliatest.azurewebsites.net/"),

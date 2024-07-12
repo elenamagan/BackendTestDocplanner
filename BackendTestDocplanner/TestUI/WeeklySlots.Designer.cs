@@ -67,7 +67,7 @@ namespace BackendTestDocplanner
             ClientSize = new Size(1282, 564);
             Controls.Add(btnNextWeek);
             Controls.Add(btnPreviousWeek);
-            this.Padding = new System.Windows.Forms.Padding(60); // Añade un padding de 40px
+            this.Padding = new System.Windows.Forms.Padding(60);
             Name = "WeeklySlots";
             Text = "Weekly Slots";
         }
