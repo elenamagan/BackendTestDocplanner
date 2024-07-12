@@ -26,6 +26,7 @@ namespace BackendTestDocplanner
                 {
                     // In Startup.cs: API configuration and launch
                     // · Adds swagger with defined controller's endpoints
+                    // · Uses HTTPS with "safe" certificate from ./Certificates (in this case, self-signed, but easily changed)
 
                     webBuilder.UseStartup<Startup>();
                 });

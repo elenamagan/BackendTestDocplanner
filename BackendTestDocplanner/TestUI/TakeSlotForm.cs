@@ -29,7 +29,7 @@ namespace BackendTestDocplanner.TestUI
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
-            _baseUrl = configuration["Kestrel:Endpoints:Http:Url"] ?? "https://localhost:5001";
+            _baseUrl = configuration["Kestrel:Endpoints:Https:Url"] ?? "https://localhost:5001";
 
         }
 

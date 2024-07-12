@@ -50,6 +50,7 @@ namespace BackendTestDocplanner
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Docplanner Backend Test API v1");
             });
 
+            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
 
