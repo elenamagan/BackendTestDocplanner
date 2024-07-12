@@ -13,8 +13,10 @@ namespace BackendTestDocplanner.Tests {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.10.0.0")]
+    #pragma warning disable CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
     internal sealed partial class nuget : global::System.Configuration.ApplicationSettingsBase {
-        
+    #pragma warning restore CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
+
         private static nuget defaultInstance = ((nuget)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new nuget())));
         
         public static nuget Default {

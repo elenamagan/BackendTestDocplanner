@@ -1,39 +1,78 @@
+using BackendTestDocplanner.Controllers;
 using BackendTestDocplanner.Controllers.Helpers;
+using BackendTestDocplanner.Controllers.Schemas;
 using BackendTestDocplanner.Services.Slot;
 using BackendTestDocplanner.Services.Slot.Schemas;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using System.Net;
+using System.Net.Http.Headers;
 
 namespace BackendTestDocplanner.Tests
 {
     public class Tests
     {
-        [SetUpFixture]
-        public class TestSetup
+        private SlotService _slotService;
+        private SlotController _slotController;
+
+        [SetUp]
+        public void Setup()
         {
-            public static TestServer Server { get; private set; }
-            public static HttpClient Client { get; private set; }
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
 
-            [OneTimeSetUp]
-            public void OneTimeSetup()
+            // Obtén el username y el password desde la configuración
+            string username = configuration["SlotService:Username"] ?? throw new InvalidOperationException("Please provide a username for the Slot Service.");
+            string password = configuration["SlotService:Password"] ?? throw new InvalidOperationException("Please provide a password for the Slot Service.");
+
+            var authHeaderValue = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes($"{username}:{password}"));
+
+            // Configuración básica de HttpClient (reemplazar con la configuración real si es necesario)
+            var httpClient = new HttpClient
             {
-                var builder = new WebHostBuilder()
-                    .UseStartup<BackendTestDocplanner.Startup>(); // Ajusta según el Startup de tu aplicación
+                BaseAddress = new Uri("https://draliatest.azurewebsites.net/"),
+            };
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authHeaderValue);
 
-                Server = new TestServer(builder);
-
-                Client = Server.CreateClient();
-            }
-
-            [OneTimeTearDown]
-            public void OneTimeTearDown()
-            {
-                Client.Dispose();
-                Server.Dispose();
-            }
+            _slotService = new SlotService(httpClient);
+            _slotController = new SlotController(_slotService);
         }
 
-        [Test]
+        [Test, Order(1)]
+        public async Task SlotService_GetWeeklyAvailability_ShouldReturnWeeklyAvailabilty_WhenDateIsValid()
+        {
+            // Check that the connection to the slot service is correct when using next week's monday
+            var nextWeekDate = SlotHelper.GetWeekStartDate(DateTime.Today.AddDays(7)).ToString("yyyyMMdd");
+
+            var response = await _slotService.GetWeeklyAvailabilityAsync(nextWeekDate);
+
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+            // Additional assertion to check deserialization to FacilityWeeklyAvailability
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                Console.Write(responseBody);
+                var availability = JsonConvert.DeserializeObject<FacilityWeeklyAvailability>(responseBody);
+
+                Assert.That(availability, Is.Not.Null);
+                Assert.That(availability.Facility, Is.Not.Null);
+                Assert.That(availability.Monday, Is.Not.Null);
+            }
+
+            // Check that the connection to the slot service is NOT correct when using next week's sunday
+            nextWeekDate = SlotHelper.GetWeekEndDate(DateTime.Today.AddDays(7)).ToString("yyyyMMdd");
+
+            response = await _slotService.GetWeeklyAvailabilityAsync(nextWeekDate);
+
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        }
+
+
+        [Test, Order(2)]
         public void CalculateAvailableSlots_ShouldReturnCorrectAvailableSlots()
         {
             // Define work period
@@ -101,6 +140,99 @@ namespace BackendTestDocplanner.Tests
                 Assert.That(availableSlots[i].Start, Is.EqualTo(expectedAvailableSlots[i].Start), $"Start time of slot {i} does not match.");
                 Assert.That(availableSlots[i].End, Is.EqualTo(expectedAvailableSlots[i].End), $"End time of slot {i} does not match.");
             }
+        }
+
+        [Test, Order(3)]
+        public async Task SlotController_GetAvailableSlots_ShouldReturnWeeklyAvailableSlots()
+        {
+            // Check that the connection to the slot service is correct when using next week's monday
+            var nextWeekDate = SlotHelper.GetWeekStartDate(DateTime.Today.AddDays(7)).ToString("yyyyMMdd");
+            var response = await _slotController.GetAvailableSlotsAsync(nextWeekDate);
+
+            Assert.That(response, Is.Not.Null);
+            Assert.That(response, Is.InstanceOf<OkObjectResult>());
+            var okResult = response as OkObjectResult;
+
+            // Additional assertion to check that data received is WeeklyAvailableSlots
+            Assert.That(okResult!.Value, Is.Not.Null);
+            Assert.That(okResult.Value, Is.InstanceOf<WeeklyAvailableSlots>());
+            var weeklyAvailableSlots = okResult.Value as WeeklyAvailableSlots;
+            Assert.That(weeklyAvailableSlots!.FacilityId, Is.Not.Null);
+            Assert.That(weeklyAvailableSlots.Monday, Is.Not.Null);
+
+
+            // Check that the connection to the slot service is also correct when using next week's sunday
+            nextWeekDate = SlotHelper.GetWeekEndDate(DateTime.Today.AddDays(7)).ToString("yyyyMMdd");
+            response = await _slotController.GetAvailableSlotsAsync(nextWeekDate);
+
+            Assert.That(response, Is.Not.Null);
+            Assert.That(response, Is.InstanceOf<OkObjectResult>());
+            okResult = response as OkObjectResult;
+
+            // Additional assertion to check that data received is WeeklyAvailableSlots
+            Assert.That(okResult!.Value, Is.Not.Null);
+            Assert.That(okResult.Value, Is.InstanceOf<WeeklyAvailableSlots>());
+            weeklyAvailableSlots = okResult.Value as WeeklyAvailableSlots;
+            Assert.That(weeklyAvailableSlots!.FacilityId, Is.Not.Null);
+            Assert.That(weeklyAvailableSlots.Monday, Is.Not.Null);
+        }
+
+        [Test, Order(4)]
+        public async Task SlotService_TakeSlot_ShouldReturnOK_WhenSlotIsAvailable()
+        {
+            // Check that the connection to the slot service is correct when using next week's monday
+            var nextWeekDate = SlotHelper.GetWeekStartDate(DateTime.Today.AddDays(7)).ToString("yyyyMMdd");
+
+            var availabilityResponse = await _slotController.GetAvailableSlotsAsync(nextWeekDate);
+            var weeklyAvailableSlots = (availabilityResponse as OkObjectResult)!.Value as WeeklyAvailableSlots;
+
+            var daysOfWeek = new Dictionary<string, List<Slot>>
+                {
+                    { "Monday", weeklyAvailableSlots!.Monday },
+                    { "Tuesday", weeklyAvailableSlots.Tuesday },
+                    { "Wednesday", weeklyAvailableSlots.Wednesday },
+                    { "Thursday", weeklyAvailableSlots.Thursday },
+                    { "Friday", weeklyAvailableSlots.Friday },
+                    { "Saturday", weeklyAvailableSlots.Saturday },
+                    { "Sunday", weeklyAvailableSlots.Sunday }
+                };
+
+            // Take the first available slot
+            Slot? selectedSlot = null;
+            foreach (var kvp in daysOfWeek)
+            {
+                var dayOfWeek = kvp.Key;
+                var slots = kvp.Value;
+
+                if (slots.Count > 0)
+                {
+                    selectedSlot = slots[0];
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine($"No slots available for {dayOfWeek}.");
+                }
+            }
+            Assert.That(selectedSlot, Is.Not.Null);
+
+            // Use first available slot for taking a slot
+            var takeSlotRequest = new TakeSlotRequest(
+                facilityId: weeklyAvailableSlots.FacilityId,
+                start: selectedSlot.Start.ToString("yyyy-MM-dd HH:mm:ss"),
+                end: selectedSlot.End.ToString("yyyy-MM-dd HH:mm:ss"),
+                comments: "My back hurts.",
+                patient: new Patient
+                (
+                    name: "Elena",
+                    secondName: "Nito",
+                    email: "elena.nito@example.com",
+                    phone: "555 44 33 22"
+                ));
+
+            // Check that the connection to the slot service is correct with the available slot
+            var response = await _slotService.TakeSlotAsync(takeSlotRequest);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         }
     }
 }

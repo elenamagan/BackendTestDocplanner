@@ -1,12 +1,6 @@
-using BackendTestDocplanner.Services.Slot;
-using BackendTestDocplanner.Services.Slot.Schemas;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using System.Net.Http.Headers;
 
 namespace BackendTestDocplanner
 {
@@ -20,7 +14,6 @@ namespace BackendTestDocplanner
             Task webTask = Task.Run(() => host.Run());
 
             // Starts WindowsForms UI
-            // MUST BE OPEN for the API to keep running
             var form = new WeeklySlots();
             Application.Run(form);
 

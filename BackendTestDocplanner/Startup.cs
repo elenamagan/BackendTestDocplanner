@@ -59,8 +59,8 @@ namespace BackendTestDocplanner
                 endpoints.MapControllers();
             });
 
-            // Runs API in another thread.
-            app.Run(async context => {});
+            // Runs API in another thread
+            app.Run(async context => { await Task.Delay(0); });
         }
     }
 }

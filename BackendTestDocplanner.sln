@@ -10,6 +10,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendTestDocplanner.Tests
 		{9028CFED-AB6B-4B7F-A54E-486BE951BDF0} = {9028CFED-AB6B-4B7F-A54E-486BE951BDF0}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4DD0DAE0-8074-4AB0-98F0-33FABE3AC19F}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
