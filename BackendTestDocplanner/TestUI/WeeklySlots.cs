@@ -2,6 +2,7 @@ using BackendTestDocplanner.Controllers.Helpers;
 using BackendTestDocplanner.Controllers.Schemas;
 using BackendTestDocplanner.Services.Slot.Schemas;
 using BackendTestDocplanner.TestUI;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace BackendTestDocplanner
@@ -19,7 +20,13 @@ namespace BackendTestDocplanner
         public WeeklySlots()
         {
             InitializeComponent();
-            _httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:5001") };
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+            string baseUrl = configuration["Kestrel:Endpoints:Https:Url"] ?? "https://localhost:5001";
+
+            _httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
 
             // Initialize DataGridView
             _dataGridView = new DataGridView
